@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      resume_analyses: {
+        Row: {
+          created_at: string
+          file_name: string
+          id: string
+          job_match_percentage: number
+          job_role: string
+          missing_skills: string[] | null
+          resume_score: number
+          soft_skills: string[] | null
+          strengths: string[] | null
+          suggestions: string[] | null
+          technical_skills: string[] | null
+          weaknesses: string[] | null
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          id?: string
+          job_match_percentage?: number
+          job_role?: string
+          missing_skills?: string[] | null
+          resume_score?: number
+          soft_skills?: string[] | null
+          strengths?: string[] | null
+          suggestions?: string[] | null
+          technical_skills?: string[] | null
+          weaknesses?: string[] | null
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          id?: string
+          job_match_percentage?: number
+          job_role?: string
+          missing_skills?: string[] | null
+          resume_score?: number
+          soft_skills?: string[] | null
+          strengths?: string[] | null
+          suggestions?: string[] | null
+          technical_skills?: string[] | null
+          weaknesses?: string[] | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
