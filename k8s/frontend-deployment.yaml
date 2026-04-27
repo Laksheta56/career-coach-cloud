@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: <ACR_NAME>.azurecr.io/career-coach-frontend:latest
+        image: crcoachacr999.azurecr.io/career-coach-frontend:latest
         ports:
         - containerPort: 80
         resources:

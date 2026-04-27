@@ -16,15 +16,10 @@ spec:
     spec:
       containers:
       - name: backend
-        image: <ACR_NAME>.azurecr.io/career-coach-backend:latest
+        image: crcoachacr999.azurecr.io/career-coach-backend:latest
         ports:
         - containerPort: 80
-        env:
-        - name: AzureWebJobsStorage
-          valueFrom:
-            secretKeyRef:
-              name: azure-secrets
-              key: AzureWebJobsStorage
+
         resources:
           requests:
             memory: "128Mi"
