@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  labels:
+    app: career-coach-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: career-coach-backend
+  template:
+    metadata:
+      labels:
+        app: career-coach-backend
+    spec:
+      containers:
+      - name: backend
+        image: <ACR_NAME>.azurecr.io/career-coach-backend:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: AzureWebJobsStorage
+          valueFrom:
+            secretKeyRef:
+              name: azure-secrets
+              key: AzureWebJobsStorage
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: career-coach-backend

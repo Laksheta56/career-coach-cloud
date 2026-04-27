@@ -1,0 +1,64 @@
+name: CI/CD Pipeline for Career Coach
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  ACR_NAME: crcoachacr999
+  AKS_CLUSTER: akscareercoach999
+  RG_NAME: resume-analyzer
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Login to Azure Container Registry
+      run: az acr login --name ${{ env.ACR_NAME }}
+
+    - name: Build and Push Frontend Image
+      run: |
+        docker build -t ${{ env.ACR_NAME }}.azurecr.io/career-coach-frontend:${{ github.sha }} \
+                     -t ${{ env.ACR_NAME }}.azurecr.io/career-coach-frontend:latest .
+        docker push ${{ env.ACR_NAME }}.azurecr.io/career-coach-frontend:${{ github.sha }}
+        docker push ${{ env.ACR_NAME }}.azurecr.io/career-coach-frontend:latest
+
+    - name: Build and Push Backend Image
+      run: |
+        cd azure-backend
+        docker build -t ${{ env.ACR_NAME }}.azurecr.io/career-coach-backend:${{ github.sha }} \
+                     -t ${{ env.ACR_NAME }}.azurecr.io/career-coach-backend:latest .
+        docker push ${{ env.ACR_NAME }}.azurecr.io/career-coach-backend:${{ github.sha }}
+        docker push ${{ env.ACR_NAME }}.azurecr.io/career-coach-backend:latest
+
+    - name: Set AKS Context
+      uses: azure/aks-set-context@v3
+      with:
+        resource-group: ${{ env.RG_NAME }}
+        cluster-name: ${{ env.AKS_CLUSTER }}
+
+    - name: Deploy to AKS
+      uses: Azure/k8s-deploy@v4
+      with:
+        manifests: |
+          k8s/frontend-deployment.yaml
+          k8s/backend-deployment.yaml
+        images: |
+          ${{ env.ACR_NAME }}.azurecr.io/career-coach-frontend:${{ github.sha }}
+          ${{ env.ACR_NAME }}.azurecr.io/career-coach-backend:${{ github.sha }}

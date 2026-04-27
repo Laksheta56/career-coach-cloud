@@ -1,0 +1,14 @@
+{
+  "name": "azure-resume-backend",
+  "version": "1.0.0",
+  "description": "Azure Functions backend for Smart Resume Analyzer",
+  "scripts": {
+    "start": "func start",
+    "test": "echo \"No tests yet...\""
+  },
+  "dependencies": {
+    "@azure/ai-form-recognizer": "^5.0.0",
+    "@azure/cosmos": "^4.0.0",
+    "@azure/openai": "^1.0.0-beta.12"
+  }
+}
